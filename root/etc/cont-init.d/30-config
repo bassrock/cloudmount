@@ -2,6 +2,8 @@
 
 # permissions
 chown -R abc:abc  \
-	/config
+	/config \
+	/mnt/rclone \
+	/mnt/unionfs
 
 echo "user_allow_other"	>> /etc/fuse.conf 
