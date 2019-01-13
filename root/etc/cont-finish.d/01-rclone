@@ -1,0 +1,11 @@
+#!/usr/bin/with-contenv bash
+
+exec s6-setuidgid root fusermount -u -z /mnt/unionfs &
+exec s6-setuidgid root fusermount -u -z /mnt/rclone &
+
+while [ -f $FILE_TO_WAIT ]
+do
+  echo "Rclone mount not disconnected yet"
+  exec s6-setuidgid root fusermount -u -z /mnt/rclone &
+  sleep 2
+done

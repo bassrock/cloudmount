@@ -1,0 +1,9 @@
+#!/usr/bin/with-contenv bash
+
+while [ ! -f $FILE_TO_WAIT ]
+do
+  echo "Rclone mount not yet active"
+  sleep 2
+done
+
+exec s6-setuidgid abc /usr/bin/unionfs -d -o cow,allow_other,uid=$PUID,gid=$PGID /mnt/local=RW:/mnt/rclone=RO /mnt/unionfs

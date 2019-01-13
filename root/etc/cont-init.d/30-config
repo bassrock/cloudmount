@@ -1,0 +1,7 @@
+#!/usr/bin/with-contenv bash
+
+# permissions
+chown -R abc:abc  \
+	/config
+
+echo "user_allow_other"	>> /etc/fuse.conf 
