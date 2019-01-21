@@ -6,4 +6,4 @@ do
   sleep 2
 done
 
-exec s6-setuidgid abc /usr/bin/unionfs -d -o cow,allow_other,uid=$PUID,gid=$PGID /mnt/local=RW:/mnt/rclone=RO /mnt/unionfs
+exec s6-setuidgid abc /usr/bin/unionfs -f -o cow,allow_other,uid=$PUID,gid=$PGID /mnt/local=RW:/mnt/rclone=RO /mnt/unionfs
