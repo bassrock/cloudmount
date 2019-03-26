@@ -18,6 +18,12 @@ RUN apt-get update && \
     
 RUN mkdir -p /tmp && \ 
 	cd /tmp && \
+    wget -q https://github.com/trapexit/mergerfs/releases/download/2.25.1/mergerfs_2.25.1.ubuntu-xenial_amd64.deb && \
+    dpkg -i mergerfs_2.25.1.ubuntu-xenial_amd64.deb && \
+    rm -rf mergerfs_2.25.1.ubuntu-xenial_amd64.deb
+    
+RUN mkdir -p /tmp && \ 
+	cd /tmp && \
     wget -q https://${RCLONE_SITE}.rclone.org/rclone-${RCLONE_VERSION}-linux-${PLATFORM_ARCH}.zip && \
     unzip /tmp/rclone-${RCLONE_VERSION}-linux-${PLATFORM_ARCH}.zip && \
     mv /tmp/rclone-*-linux-${PLATFORM_ARCH}/rclone /usr/bin && \
