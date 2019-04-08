@@ -8,5 +8,5 @@ done
 
 echo "Rclone mount active"
 
-exec s6-setuidgid abc /usr/bin/mergerfs -f -o defaults,category.create=epff,minfreespace=0,allow_other,dropcacheonclose=true,security_capability=false,xattr=nosys,statfs_ignore=ro,use_ino,hard_remove,auto_cache,sync_read,umask=0002,noatime /mnt/local=RW:/mnt/rclone=RW /mnt/unionfs
+exec s6-setuidgid abc /usr/bin/mergerfs -f -o defaults,nonempty,category.create=epff,minfreespace=0,allow_other,xattr=nosys,statfs_ignore=ro,use_ino,hard_remove,umask=0002,noatime /mnt/local=RW:/mnt/rclone=RW /mnt/unionfs
 
