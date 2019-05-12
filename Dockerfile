@@ -18,9 +18,9 @@ RUN apt-get update && \
     
 RUN mkdir -p /tmp && \ 
 	cd /tmp && \
-    wget -q https://github.com/trapexit/mergerfs/releases/download/2.25.1/mergerfs_2.25.1.ubuntu-xenial_amd64.deb && \
-    dpkg -i mergerfs_2.25.1.ubuntu-xenial_amd64.deb && \
-    rm -rf mergerfs_2.25.1.ubuntu-xenial_amd64.deb
+    wget -q https://github.com/trapexit/mergerfs/releases/download/2.26.0/mergerfs_2.26.0.ubuntu-xenial_amd64.deb && \
+    dpkg -i mergerfs_2.26.0.ubuntu-xenial_amd64.deb && \
+    rm -rf mergerfs_2.26.0.ubuntu-xenial_amd64.deb
     
 RUN mkdir -p /tmp && \ 
 	cd /tmp && \
