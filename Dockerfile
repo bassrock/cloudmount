@@ -4,6 +4,7 @@ FROM lsiobase/ubuntu
 ENV PLATFORM_ARCH="amd64"
 ARG RCLONE_VERSION="current"
 ARG RCLONE_SITE="downloads"
+ARG MERGER_VERSION="2.26.1"
 
 
 
@@ -18,9 +19,9 @@ RUN apt-get update && \
     
 RUN mkdir -p /tmp && \ 
 	cd /tmp && \
-    wget -q https://github.com/trapexit/mergerfs/releases/download/2.26.0/mergerfs_2.26.0.ubuntu-xenial_amd64.deb && \
-    dpkg -i mergerfs_2.26.0.ubuntu-xenial_amd64.deb && \
-    rm -rf mergerfs_2.26.0.ubuntu-xenial_amd64.deb
+    wget -q https://github.com/trapexit/mergerfs/releases/download/${MERGER_VERSION}/mergerfs_${MERGER_VERSION}.ubuntu-xenial_amd64.deb && \
+    dpkg -i mergerfs_${MERGER_VERSION}.ubuntu-xenial_amd64.deb && \
+    rm -rf mergerfs_${MERGER_VERSION}.ubuntu-xenial_amd64.deb
     
 RUN mkdir -p /tmp && \ 
 	cd /tmp && \
