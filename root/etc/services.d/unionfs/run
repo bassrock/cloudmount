@@ -2,11 +2,11 @@
 
 while [ ! -f $FILE_TO_WAIT ]
 do
-  echo "Rclone mount not yet active"
+  echo "MergerFS mount not yet active"
   sleep 2
 done
 
-echo "Rclone mount active"
+echo "MergerFS mount active"
 
-exec s6-setuidgid abc /usr/bin/mergerfs -f -o defaults,nonempty,category.create=epff,minfreespace=0,allow_other,direct_io,xattr=nosys,statfs_ignore=ro,use_ino,hard_remove,umask=0002,noatime /mnt/local=RW:/mnt/rclone=RW /mnt/unionfs
+exec s6-setuidgid abc /usr/bin/mergerfs -f -o defaults,nonempty,category.action=all,category.create=epff,minfreespace=0,allow_other,auto_cache,sync_read,umask=0002,func.getattr=newest /mnt/local=RW:/mnt/rclone=RW /mnt/unionfs
 
