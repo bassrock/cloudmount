@@ -1,0 +1,12 @@
+#!/usr/bin/with-contenv bash
+
+while [ ! -f $FILE_TO_WAIT ]
+do
+  echo "MergerFS mount not yet active"
+  sleep 2
+done
+
+echo "MergerFS mount active"
+
+exec s6-setuidgid abc /usr/bin/mergerfs -f -o $MERGERFS_OPTIONS /mnt/local=RW:/mnt/rclone=RW /mnt/mergerfs
+

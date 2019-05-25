@@ -1,12 +1,12 @@
-FROM lsiobase/ubuntu
+FROM lsiobase/ubuntu:bionic
 
 # global environment settings
 ENV PLATFORM_ARCH="amd64"
 ARG RCLONE_VERSION="current"
 ARG RCLONE_SITE="downloads"
-ARG MERGER_VERSION="2.27.1"
+ARG MERGERFS_VERSION="2.27.1"
 
-
+ENV MERGERFS_OPTIONS="defaults,nonempty,category.action=all,category.create=epff,minfreespace=0,allow_other,auto_cache,sync_read,umask=0002,func.getattr=newest"
 
 # s6 environment settings
 ENV S6_BEHAVIOUR_IF_STAGE2_FAILS=2
@@ -19,9 +19,9 @@ RUN apt-get update && \
     
 RUN mkdir -p /tmp && \ 
 	cd /tmp && \
-    wget -q https://github.com/trapexit/mergerfs/releases/download/${MERGER_VERSION}/mergerfs_${MERGER_VERSION}.ubuntu-xenial_amd64.deb && \
-    dpkg -i mergerfs_${MERGER_VERSION}.ubuntu-xenial_amd64.deb && \
-    rm -rf mergerfs_${MERGER_VERSION}.ubuntu-xenial_amd64.deb
+    wget -q https://github.com/trapexit/mergerfs/releases/download/${MERGERFS_VERSION}/mergerfs_${MERGERFS_VERSION}.ubuntu-bionic_amd64.deb && \
+    dpkg -i mergerfs_${MERGERFS_VERSION}.ubuntu-bionic_amd64.deb && \
+    rm -rf mergerfs_${MERGERFS_VERSION}.ubuntu-bionic_amd64.deb
     
 RUN mkdir -p /tmp && \ 
 	cd /tmp && \
@@ -34,6 +34,6 @@ RUN mkdir -p /tmp && \
 # add local files
 COPY root/ /
 
-VOLUME /config /mnt/unionfs /mnt/google /mnt/local
+VOLUME /config /mnt/mergerfs /mnt/google /mnt/local
 
 ENTRYPOINT ["/init"]
