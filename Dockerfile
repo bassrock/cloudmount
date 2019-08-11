@@ -34,6 +34,6 @@ RUN mkdir -p /tmp && \
 # add local files
 COPY root/ /
 
-VOLUME /config /mnt/mergerfs /mnt/google /mnt/local
+VOLUME /config /mnt/mergerfs /mnt/rclone /mnt/local
 
 ENTRYPOINT ["/init"]
