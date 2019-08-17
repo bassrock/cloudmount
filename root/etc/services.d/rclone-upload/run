@@ -1,0 +1,67 @@
+#!/usr/bin/with-contenv bash
+
+# Starting Actions
+mkdir /config/logs -p
+logfile=/config/logs/rclone-upload.log
+safile=/config/sa_list
+touch $logfile
+truncate -s 0 $logfile
+
+echo -e "\n\n---Starting: $(date "+%Y-%m-%d %H:%M:%S")---" >>$logfile
+
+startscript() {
+    while read p; do
+
+        let "cyclecount++"
+
+        if [[ $cyclecount -gt 4294967295 ]]; then
+            cyclecount=0
+        fi
+
+        if ! [[ -f "$safile" ]]; then
+            echo "Could not find $safile"
+            echo "This file should be a list of the config-section names for the 'google service accounts' as defined in rclone.conf"
+            echo "example:"
+            echo "cat sa_list"
+            echo -e "GDSA01\nGDSA02\nGDSA03"
+        fi
+
+        echo -e "\n---Begin cycle $cyclecount - $p: $(date "+%Y-%m-%d %H:%M:%S")---" >>$logfile
+        echo "Checking for files to upload..." >>$logfile
+        
+        if [[ $(find "/data/local/$RCLONE_UPLOAD_LOCAL_PATH" -type f \( -exec [ -f {}/.ignore ] \; -prune \) -o \( -name .ignore -prune \) -o -print | wc -l) -gt 0 ]]; then
+            rclone $RCLONE_UPLOAD_CMD "/data/local/$RCLONE_UPLOAD_LOCAL_PATH" "${p}:/$RCLONE_UPLOAD_REMOTE_PATH" \
+                --config=/config/rclone.conf \
+                --log-file=$logfile \
+                --log-level=INFO --stats=5s --stats-file-name-length=0 \
+                --tpslimit=10 \
+                --checkers=16 \
+                --transfers=8 \
+                --no-traverse \
+                --fast-list \
+                --bwlimit="$RCLONE_BWLIMIT" \
+                --drive-chunk-size="$RCLONE_DRIVE_CHUNK_SIZE" \
+                --user-agent="$RCLONE_USER_AGENT" \
+                --delete-empty-src-dirs \
+                --exclude="**_HIDDEN~" --exclude="**partial~" --exclude=".fuse_hidden**" \
+                --exclude-if-present=".ignore"
+
+            echo "Upload has finished." >>$logfile
+        else
+            echo "No files in /data/local/$RCLONE_UPLOAD_LOCAL_PATH to upload." >>$logfile
+        fi
+
+        echo "---Completed cycle $cyclecount: $(date "+%Y-%m-%d %H:%M:%S")---" >>$logfile
+        echo "$(tail -n 200 $logfile)" >$logfile
+
+        sleep 30
+
+    # Remove empty directories
+    #find "/data/local/$RCLONE_UPLOAD_LOCAL_PATH" -mindepth 2 -type d \( ! -name **games** ! -name ebooks ! -name abooks ! -name **tv** ! -name **movies** ! -name music** ! -name audio** ! -name anime** ! -name software ! -name xxx \) -empty -delete
+
+    done <$safile
+}
+
+# keeps the function in a loop
+loopy=0
+while [[ "$loopy" == "0" ]]; do startscript; done

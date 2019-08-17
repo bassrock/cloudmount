@@ -1,11 +1,14 @@
 #!/usr/bin/with-contenv bash
 
-exec s6-setuidgid root fusermount -u -z /mnt/mergerfs &
-exec s6-setuidgid root fusermount -u -z /mnt/rclone &
+echo "Unmounting /data/union"
+exec s6-setuidgid root fusermount -uz "/data/union" &
+echo "/data/remote has been unmounted"
+exec s6-setuidgid root fusermount -uz "/data/remote" &
 
-while [ -f $FILE_TO_WAIT ]
+while [ -f "/data/remote/$RCLONE_HEALTH_CHECK_FILE" ]
 do
-  echo "Rclone mount not disconnected yet"
-  exec s6-setuidgid root fusermount -u -z /mnt/rclone &
+  echo "/data/remote not disconnected yet, unmounting again..."
+  exec s6-setuidgid root fusermount -uz "/data/remote" &
   sleep 2
 done
+echo "/data/remote has been unmounted!"

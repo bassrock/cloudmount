@@ -1,0 +1,46 @@
+#!/usr/bin/with-contenv bash
+mkdir /config/logs -p
+
+RCLONE_MOUNT_OPTIONS="--config /config/rclone.conf --log-file=/config/logs/rclone-mount.log \
+--contimeout 10s --umask=002 --allow-other --allow-non-empty --timeout=20m --tpslimit=10 --drive-skip-gdocs \
+--max-read-ahead=256M --fuse-flag=sync_read --fuse-flag=auto_cache \
+--user-agent=$RCLONE_USER_AGENT \
+$RCLONE_MOUNT_OPTIONS"
+
+echo -e "\n=================================================="
+echo "Mounting rclone: $(date +%Y.%m.%d-%T)"
+echo "Using: rclone mount $RCLONE_REMOTE /data/remote $RCLONE_MOUNT_OPTIONS"
+echo -e "==================================================\n"
+
+function term_handler {
+  echo "sending SIGTERM to child pid"
+  kill -SIGTERM ${!}      #kill last spawned background process $(pidof rclone)
+  fuse_unmount
+  echo "exiting container now"
+  exit $?
+}
+
+function cache_handler {
+  echo "sending SIGHUP to child pid"
+  kill -SIGHUP ${!}
+  wait ${!}
+}
+
+function fuse_unmount {
+  echo "Unmounting: fusermount -uz /data/remote at: $(date +%Y.%m.%d-%T)"
+  fusermount -uz "/data/remote"
+}
+
+#traps, SIGHUP is for cache clearing
+trap term_handler SIGINT SIGTERM
+trap cache_handler SIGHUP
+
+#mount rclone remote and wait
+exec s6-setuidgid abc /usr/bin/rclone mount "$RCLONE_REMOTE" "/data/remote" $RCLONE_MOUNT_OPTIONS &
+
+wait ${!}
+echo "rclone crashed at: $(date +%Y.%m.%d-%T)"
+tail -n 20 /config/rclone-mount.log
+fuse_unmount
+
+exit $?

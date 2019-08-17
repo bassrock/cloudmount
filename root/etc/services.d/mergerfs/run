@@ -1,12 +1,15 @@
 #!/usr/bin/with-contenv bash
 
-while [ ! -f $FILE_TO_WAIT ]
+while [ ! -f "/data/remote/$RCLONE_HEALTH_CHECK_FILE" ]
 do
-  echo "MergerFS mount not yet active"
+  echo "MergerFS mount not yet active, waiting for rclone mount..."
   sleep 2
 done
 
-echo "MergerFS mount active"
+echo -e "\n=================================================="
+echo "Mounting mergerfs: $(date +%Y.%m.%d-%T)"
+echo "Using: mergerfs -f -o $MERGERFS_OPTIONS /data/local=$MERGERFS_LOCAL_RWMODE:/data/remote=$MERGERFS_RCLONE_RWMODE /data/union"
+echo -e "==================================================\n"
 
-exec s6-setuidgid abc /usr/bin/mergerfs -f -o $MERGERFS_OPTIONS /mnt/local=RW:/mnt/rclone=RW /mnt/mergerfs
-
+exec s6-setuidgid abc /usr/bin/mergerfs -f -o $MERGERFS_OPTIONS "/data/local=$MERGERFS_LOCAL_RWMODE:/data/remote=$MERGERFS_RCLONE_RWMODE" "/data/union"
+echo "Mergerfs mounted!"
