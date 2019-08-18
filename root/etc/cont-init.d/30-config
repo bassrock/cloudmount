@@ -3,7 +3,8 @@
 # permissions
 chown -R abc:abc  \
 	/config \
-	/mnt/rclone \
-	/mnt/mergerfs
+	/data/remote \
+	/data/union \
+	/data/local
 
 echo "user_allow_other"	>> /etc/fuse.conf 
