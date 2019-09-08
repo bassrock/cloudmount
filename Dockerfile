@@ -4,7 +4,7 @@ FROM lsiobase/ubuntu:bionic
 ENV PLATFORM_ARCH="amd64"
 ARG RCLONE_VERSION="current"
 ARG RCLONE_SITE="downloads"
-ARG MERGERFS_VERSION="2.28.1"
+ARG MERGERFS_VERSION="2.28.2"
 
 ENV MERGERFS_OPTIONS="defaults,nonempty,category.action=all,category.create=epff,minfreespace=0,allow_other,auto_cache,sync_read,umask=0002,func.getattr=newest"
 
