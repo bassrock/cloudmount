@@ -8,5 +8,5 @@ done
 
 echo "MergerFS mount active"
 
-exec s6-setuidgid abc /usr/bin/mergerfs -f -o $MERGERFS_OPTIONS /mnt/local=RW:/mnt/rclone=RW /mnt/mergerfs
+exec s6-setuidgid root /usr/bin/mergerfs -f -o $MERGERFS_OPTIONS /mnt/local=RW:/mnt/rclone=RW /mnt/mergerfs
 
